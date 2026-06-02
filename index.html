@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#0f1117"/>
+<meta name="description" content="PlanFlow - Gestion de planning d'équipe"/>
+<title>PlanFlow</title>
+<link rel="manifest" href="manifest.json"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f1117;color:#e8eaf0;font-family:'Segoe UI',sans-serif;min-height:100vh}
+.header{background:#161b27;border-bottom:1px solid #232840;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:20px;color:#fff}.logo span{color:#4f8ef7}
+.btn{padding:8px 16px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s}
+.btn-primary{background:#4f8ef7;color:#fff;border:1.5px solid #4f8ef7}
+.btn-outline{background:transparent;color:#8892b0;border:1.5px solid #8892b0}
+.btn-danger{background:transparent;color:#ef4444;border:1.5px solid #ef4444}
+.container{max-width:860px;margin:0 auto;padding:20px 14px}
+.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:9px;font-weight:500;font-size:13px;cursor:pointer;border:1.5px solid transparent;color:#8892b0;background:transparent}
+.tab.active{background:#4f8ef722;color:#4f8ef7;border-color:#4f8ef744;font-weight:700}
+.card{background:#161b27;border-radius:14px;border:1px solid #232840;padding:16px;margin-bottom:10px}
+.card-task{border-left:4px solid #4f8ef7}
+.badge{border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700}
+.badge-done{background:#22c55e22;color:#22c55e;border:1px solid #22c55e55}
+.badge-pending{background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b55}
+.badge-cancelled{background:#ef444422;color:#ef4444;border:1px solid #ef444455}
+.input{background:#0f1117;border:1.5px solid #232840;border-radius:9px;padding:9px 12px;color:#e8eaf0;font-size:13px;width:100%;outline:none}
+select.input{cursor:pointer}
+.label{font-size:11px;font-weight:700;color:#8892b0;margin-bottom:4px;display:block;letter-spacing:.7px;text-transform:uppercase}
+.modal-bg{display:none;position:fixed;inset:0;background:#000a;z-index:100;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#161b27;border-radius:18px;border:1px solid #2d3561;padding:28px;width:min(460px,94vw);max-height:90vh;overflow-y:auto}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.span2{grid-column:span 2}
+.emp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.emp-card{background:#161b27;border-radius:14px;border:1px solid #232840;padding:20px;text-align:center}
+.avatar{width:48px;height:48px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;margin:0 auto 8px}
+.notif-card{background:#161b27;border-radius:12px;padding:14px 16px;margin-bottom:10px;border-left:4px solid #232840}
+.notif-card.unread{border-left-color:#4f8ef7}
+.day-label{font-size:11px;font-weight:700;color:#8892b0;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.empty{color:#3d4466;font-size:12px;padding-left:10px;padding-bottom:4px}
+.flex{display:flex;align-items:center;gap:10px}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.ml-auto{margin-left:auto}
+.comment{margin-top:6px;font-size:12px;color:#c8d0e8;background:#232840;border-radius:8px;padding:6px 10px}
+.row-actions{display:flex;gap:6px;margin-left:auto}
+textarea.input{min-height:65px;resize:vertical}
+.notif-badge{background:#ef4444;color:#fff;border-radius:99px;padding:1px 7px;font-size:10px;font-weight:800;margin-left:4px}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-card{background:#161b27;border-radius:18px;border:1px solid #232840;padding:36px;width:min(380px,92vw);text-align:center}
+.login-icon{font-size:40px;margin-bottom:8px}
+.login-title{font-weight:800;font-size:24px;margin-bottom:4px}
+.error{color:#ef4444;font-size:12px;margin-top:6px}
+.filter-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-icon">📋</div>
+    <div class="login-title">Plan<span style="color:#4f8ef7">Flow</span></div>
+    <p style="color:#8892b0;font-size:13px;margin-bottom:24px">Gestion de planning d'équipe</p>
+    <label class="label">Code d'accès</label>
+    <input class="input" type="password" id="code-input" placeholder="••••••••" style="text-align:center;letter-spacing:3px;font-size:16px"/>
+    <div class="error" id="login-error"></div>
+    <button class="btn btn-primary" onclick="doLogin()" style="width:100%;padding:12px;font-size:15px;border-radius:12px;margin-top:14px">Se connecter</button>
+    <div style="margin-top:16px;font-size:11px;color:#3d4466">Admin : ADMIN2026 &nbsp;|&nbsp; Équipe : TEAM2026</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-screen" style="display:none">
+  <div class="header">
+    <span class="logo">Plan<span>Flow</span> <span id="mode-label" style="font-size:12px;color:#8892b0;font-weight:500"></span></span>
+    <button class="btn btn-outline" onclick="doLogout()">Déconnexion</button>
+  </div>
+  <div class="container">
+    <div class="tabs" id="tabs"></div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<!-- MODAL TÂCHE -->
+<div class="modal-bg" id="task-modal">
+  <div class="modal">
+    <div style="font-weight:800;font-size:17px;margin-bottom:18px" id="task-modal-title">Nouvelle tâche</div>
+    <div class="grid2">
+      <div><label class="label">Employé</label><select class="input" id="t-emp"></select></div>
+      <div><label class="label">Type</label><select class="input" id="t-type"><option value="intervention">Intervention</option><option value="horaire">Horaire</option></select></div>
+      <div class="span2"><label class="label">Titre</label><input class="input" id="t-title" type="text"/></div>
+      <div><label class="label">Date</label><input class="input" id="t-date" type="date"/></div>
+      <div><label class="label">Statut</label><select class="input" id="t-status"><option value="pending">En cours</option><option value="done">Terminé</option><option value="cancelled">Annulé</option></select></div>
+      <div><label class="label">Heure début</label><input class="input" id="t-start" type="time"/></div>
+      <div><label class="label">Heure fin</label><input class="input" id="t-end" type="time"/></div>
+      <div class="span2"><label class="label">Lieu</label><input class="input" id="t-loc" type="text"/></div>
+      <div class="span2"><label class="label">Commentaire</label><textarea class="input" id="t-comment"></textarea></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">
+      <button class="btn btn-outline" onclick="closeTaskModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveTask()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EMPLOYÉ -->
+<div class="modal-bg" id="emp-modal">
+  <div class="modal">
+    <div style="font-weight:800;font-size:17px;margin-bottom:18px">Nouvel employé</div>
+    <label class="label">Nom complet</label>
+    <input class="input" id="e-name" type="text" style="margin-bottom:14px"/>
+    <label class="label">Poste / Rôle</label>
+    <input class="input" id="e-role" type="text" style="margin-bottom:20px"/>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="closeEmpModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveEmp()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN="ADMIN2026",EMP="TEAM2026";
+const COLORS=["#4f8ef7","#f76f4f","#4fcf8e","#f7c44f","#b04ff7"];
+const DAYS=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+const DATES=["2026-06-01","2026-06-02","2026-06-03","2026-06-04","2026-06-05","2026-06-06","2026-06-07"];
+
+let mode="";
+let employees=[
+  {id:1,name:"Marie Dupont",role:"Technicienne",av:"MD"},
+  {id:2,name:"Jean-Luc Bernard",role:"Chef d'équipe",av:"JB"},
+  {id:3,name:"Sofia Martin",role:"Assistante",av:"SM"}
+];
+let tasks=[
+  {id:1,empId:1,title:"Maintenance réseau",type:"intervention",date:"2026-06-01",start:"08:00",end:"12:00",loc:"Bâtiment A",status:"done",comment:"Terminé sans incident."},
+  {id:2,empId:2,title:"Réunion hebdo",type:"horaire",date:"2026-06-02",start:"09:00",end:"10:00",loc:"Salle de conf.",status:"pending",comment:""},
+  {id:3,empId:3,title:"Chantier Zone C",type:"intervention",date:"2026-06-03",start:"07:30",end:"16:30",loc:"Zone C",status:"pending",comment:""},
+  {id:4,empId:1,title:"Formation sécurité",type:"horaire",date:"2026-06-04",start:"14:00",end:"17:00",loc:"Salle B",status:"pending",comment:""}
+];
+let notifs=[
+  {id:1,text:"Tâche « Maintenance réseau » marquée terminée.",time:"Il y a 2h",read:false},
+  {id:2,text:"Planning semaine 23 mis à jour.",time:"Hier",read:true}
+];
+let currentTab="planning";
+let editTaskId=null;
+let filterEmp="all";
+
+function doLogin(){
+  const v=document.getElementById("code-input").value;
+  if(v===ADMIN){mode="admin";launch()}
+  else if(v===EMP){mode="employee";launch()}
+  else document.getElementById("login-error").textContent="Code incorrect.";
+}
+document.getElementById("code-input").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
+
+function doLogout(){mode="";document.getElementById("app-screen").style.display="none";document.getElementById("login-screen").style.display="flex";document.getElementById("code-input").value="";}
+
+function launch(){
+  document.getElementById("login-screen").style.display="none";
+  document.getElementById("app-screen").style.display="block";
+  document.getElementById("mode-label").textContent=mode==="admin"?"— Administration":"— Vue Équipe";
+  currentTab="planning";filterEmp="all";
+  renderTabs();renderContent();
+}
+
+function unreadCount(){return notifs.filter(n=>!n.read).length}
+
+function renderTabs(){
+  const tabs=document.getElementById("tabs");
+  const list=mode==="admin"
+    ?[["planning","📅 Planning"],["employees","👥 Employés"],["notifs","🔔 Notifications"]]
+    :[["planning","📅 Planning"],["notifs","🔔 Notifications"]];
+  tabs.innerHTML=list.map(([id,label])=>{
+    const u=id==="notifs"&&unreadCount()>0?`<span class="notif-badge">${unreadCount()}</span>`:"";
+    return `<div class="tab${currentTab===id?" active":""}" onclick="switchTab('${id}')">${label}${u}</div>`;
+  }).join("");
+}
+
+function switchTab(t){currentTab=t;renderTabs();renderContent();}
+
+function renderContent(){
+  const el=document.getElementById("content");
+  if(currentTab==="planning") el.innerHTML=renderPlanning();
+  else if(currentTab==="employees") el.innerHTML=renderEmployees();
+  else el.innerHTML=renderNotifs();
+}
+
+function fmtDate(d){if(!d)return"";const[y,m,day]=d.split("-");return`${day}/${m}/${y}`;}
+function badge(s){const m={done:["badge-done","Terminé"],pending:["badge-pending","En cours"],cancelled:["badge-cancelled","Annulé"]};const[cls,lbl]=m[s]||["",""];return`<span class="badge ${cls}">${lbl}</span>`;}
+function empColor(id){const i=employees.findIndex(e=>e.id===id);return COLORS[i%COLORS.length]||"#4f8ef7";}
+
+function renderPlanning(){
+  const isAdmin=mode==="admin";
+  const filterSel=`<select class="input" onchange="setFilter(this.value)" style="width:auto;min-width:170px"><option value="all">Tous les employés</option>${employees.map(e=>`<option value="${e.id}"${filterEmp==e.id?" selected":""}>${e.name}</option>`).join("")}</select>`;
+  const addBtn=isAdmin?`<button class="btn btn-primary" onclick="openTaskModal()">+ Ajouter</button>`:"";
+  let html=`<div class="filter-row"><div><label class="label">Filtrer</label>${filterSel}</div>${addBtn}</div>`;
+  DATES.forEach((date,di)=>{
+    const dayTasks=tasks.filter(t=>t.date===date&&(filterEmp==="all"||t.empId==filterEmp));
+    html+=`<div class="day-label" style="margin-top:10px">${DAYS[di]} ${fmtDate(date)}</div>`;
+    if(!dayTasks.length){html+=`<div class="empty">Aucune tâche</div>`;return;}
+    dayTasks.forEach(t=>{
+      const emp=employees.find(e=>e.id===t.empId)||{name:"?",av:"?"};
+      const c=empColor(t.empId);
+      const actions=isAdmin?`<div class="row-actions"><button class="btn btn-outline" style="padding:4px 10px;font-size:11px" onclick="openEditTask(${t.id})">Modifier</button><button class="btn btn-danger" style="padding:4px 10px;font-size:11px" onclick="delTask(${t.id})">Sup.</button></div>`:"";
+      html+=`<div class="card card-task" style="border-left-color:${c};margin-bottom:8px"><div class="flex">${avEl(emp,c)}<div style="flex:1"><div style="font-weight:700;font-size:14px">${t.title}</div><div style="font-size:11px;color:#8892b0">${emp.name} · ${t.start}–${t.end}${t.loc?" · 📍"+t.loc:""}</div>${t.comment?`<div class="comment">💬 ${t.comment}</div>`:""}</div>${badge(t.status)}${actions}</div></div>`;
+    });
+  });
+  return html;
+}
+
+function avEl(emp,c){return`<div style="background:${c}33;color:${c};border-radius:99px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0">${emp.av}</div>`;}
+
+function renderEmployees(){
+  let html=`<div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn btn-primary" onclick="openEmpModal()">+ Ajouter un employé</button></div><div class="emp-grid">`;
+  employees.forEach((e,i)=>{
+    const c=COLORS[i%COLORS.length];
+    const count=tasks.filter(t=>t.empId===e.id).length;
+    html+=`<div class="emp-card"><div class="avatar" style="background:${c}33;color:${c}">${e.av}</div><div style="font-weight:700;font-size:14px">${e.name}</div><div style="font-size:12px;color:#8892b0;margin-top:2px">${e.role}</div><div style="font-size:12px;color:${c};font-weight:700;margin-top:6px">${count} tâche${count>1?"s":""}</div></div>`;
+  });
+  return html+"</div>";
+}
+
+function renderNotifs(){
+  const markBtn=`<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-outline" onclick="markAllRead()">Tout marquer lu</button></div>`;
+  if(!notifs.length) return markBtn+"<p style='color:#8892b0'>Aucune notification.</p>";
+  return markBtn+notifs.map(n=>`<div class="notif-card${n.read?"":" unread"}"><div style="font-weight:${n.read?400:700};font-size:13px">${n.text}</div><div style="font-size:11px;color:#8892b0;margin-top:4px">${n.time}</div></div>`).join("");
+}
+
+function setFilter(v){filterEmp=v;renderContent();}
+function markAllRead(){notifs=notifs.map(n=>({...n,read:true}));renderTabs();renderContent();}
+function pushNotif(text){notifs=[{id:Date.now(),text,time:"À l'instant",read:false},...notifs];renderTabs();}
+
+// TASK MODAL
+function openTaskModal(){
+  editTaskId=null;
+  document.getElementById("task-modal-title").textContent="Nouvelle tâche";
+  fillEmpSelect();
+  ["t-title","t-loc","t-comment"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("t-date").value="";
+  document.getElementById("t-start").value="";
+  document.getElementById("t-end").value="";
+  document.getElementById("t-status").value="pending";
+  document.getElementById("t-type").value="intervention";
+  document.getElementById("task-modal").classList.add("open");
+}
+function openEditTask(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  editTaskId=id;
+  document.getElementById("task-modal-title").textContent="Modifier la tâche";
+  fillEmpSelect(t.empId);
+  document.getElementById("t-title").value=t.title;
+  document.getElementById("t-type").value=t.type;
+  document.getElementById("t-date").value=t.date;
+  document.getElementById("t-start").value=t.start;
+  document.getElementById("t-end").value=t.end;
+  document.getElementById("t-loc").value=t.loc;
+  document.getElementById("t-status").value=t.status;
+  document.getElementById("t-comment").value=t.comment;
+  document.getElementById("task-modal").classList.add("open");
+}
+function fillEmpSelect(sel){
+  const s=document.getElementById("t-emp");
+  s.innerHTML=`<option value="">— Choisir —</option>`+employees.map(e=>`<option value="${e.id}"${e.id===sel?" selected":""}>${e.name}</option>`).join("");
+}
+function closeTaskModal(){document.getElementById("task-modal").classList.remove("open");editTaskId=null;}
+function saveTask(){
+  const empId=parseInt(document.getElementById("t-emp").value);
+  const title=document.getElementById("t-title").value.trim();
+  if(!empId||!title)return;
+  const obj={empId,title,type:document.getElementById("t-type").value,date:document.getElementById("t-date").value,start:document.getElementById("t-start").value,end:document.getElementById("t-end").value,loc:document.getElementById("t-loc").value,status:document.getElementById("t-status").value,comment:document.getElementById("t-comment").value};
+  if(editTaskId){tasks=tasks.map(t=>t.id===editTaskId?{...t,...obj}:t);pushNotif(`Planning modifié : « ${title} »`);}
+  else{tasks=[...tasks,{...obj,id:Date.now()}];pushNotif(`Nouvelle tâche : « ${title} »`);}
+  closeTaskModal();renderContent();
+}
+function delTask(id){const t=tasks.find(x=>x.id===id);tasks=tasks.filter(x=>x.id!==id);if(t)pushNotif(`Tâche supprimée : « ${t.title} »`);renderContent();}
+
+// EMP MODAL
+function openEmpModal(){document.getElementById("e-name").value="";document.getElementById("e-role").value="";document.getElementById("emp-modal").classList.add("open");}
+function closeEmpModal(){document.getElementById("emp-modal").classList.remove("open");}
+function saveEmp(){
+  const name=document.getElementById("e-name").value.trim();if(!name)return;
+  const av=name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
+  employees=[...employees,{id:Date.now(),name,role:document.getElementById("e-role").value,av}];
+  pushNotif(`Nouvel employé : ${name}`);closeEmpModal();renderContent();
+}
+
+// Fermer modals en cliquant dehors
+document.getElementById("task-modal").addEventListener("click",e=>{if(e.target===document.getElementById("task-modal"))closeTaskModal();});
+document.getElementById("emp-modal").addEventListener("click",e=>{if(e.target===document.getElementById("emp-modal"))closeEmpModal();});
+</script>
+</body>
+</html>
