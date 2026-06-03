@@ -1,5 +1,4 @@
-
-const CACHE='lmt-v1';
+const CACHE='lmt-v2';
 const ASSETS=['/'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(ASSETS);}));
