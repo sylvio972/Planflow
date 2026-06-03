@@ -1,9 +1,0 @@
-{
-  "name": "LMT Planning Flow",
-  "short_name": "LMT",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#d4a017",
-  "icons": [{"src": "https://raw.githubusercontent.com/sylvio972/Planflow/main/2533CD4C-9971-414A-9CE9-B8AAD86CC1CF.png","sizes": "192x192","type": "image/png"},{"src": "https://raw.githubusercontent.com/sylvio972/Planflow/main/2533CD4C-9971-414A-9CE9-B8AAD86CC1CF.png","sizes": "512x512","type": "image/png"}]
-}
