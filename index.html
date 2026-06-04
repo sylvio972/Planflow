@@ -11,6 +11,7 @@
 <style>:root{--bg:#0a0a0a;--s1:#111;--s2:#181818;--s3:#222;--bd:#2a2a2a;--gd:#d4a017;--g2:#f0c040;--g3:#b8860b;--tx:#f5f0e8;--t2:#777;--t3:#444;--rd:#e04444;--gn:#44cc88;--bl:#4488ff}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--tx);font-family:Inter,sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:url('https://raw.githubusercontent.com/sylvio972/Planflow/main/2533CD4C-9971-414A-9CE9-B8AAD86CC1CF.png') center center no-repeat;background-size:55%;opacity:.5;pointer-events:none;z-index:0;filter:grayscale(100%)}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pu{0%,100%{opacity:1}50%{opacity:.5}}
 .fi{animation:fi .25s ease forwards}
@@ -188,7 +189,7 @@ textarea.inp{min-height:55px;resize:vertical}
       <div><div class="hlmt">LMT</div><div class="hsub">Planning Flow</div></div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
-      <div class="clk" id="clk"></div>
+      <div style="display:flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:4px 9px"><div id="conn-dot" style="width:7px;height:7px;border-radius:99px;background:var(--gn);box-shadow:0 0 6px var(--gn);flex-shrink:0;animation:pu 2s infinite"></div><span id="conn-lbl" style="font-size:10px;font-weight:600;color:var(--gn)">En ligne</span></div><div class="clk" id="clk"></div>
       <button class="bout" onclick="doLogout()">
         <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Quitter
@@ -860,4 +861,4 @@ function saveChecklist(){
 function closeChecklist(){document.getElementById("cl-modal").classList.remove("op");}
 </script>
 </body>
-</html> 
+</html>
